@@ -134,6 +134,27 @@ fun PreferencesObserverScreen(
                 )
             }
         }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Surface(
+            color = MaterialTheme.colorScheme.primaryContainer,
+            shape = MaterialTheme.shapes.medium
+        ) {
+            Column(modifier = Modifier.padding(12.dp)) {
+                Text(
+                    text = "Nota de Arquitectura (Tareas 3 y 4):",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Text(
+                    text = "El repositorio lee de DataStore mediante Flow<Preferences> y el ViewModel lo expone mediante StateFlow<UserPreferences>. Cuando se modifiquen los valores en la Tarea 5, este componente se recompondrá de forma automática e inmediata.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+        }
     }
 }
 
