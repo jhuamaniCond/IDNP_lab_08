@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilterChip
@@ -19,6 +20,10 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -57,6 +62,9 @@ private val APUNTES = listOf(
  * las preferencias persistentes. Cada control solo notifica el evento (callbacks); la
  * escritura en DataStore la hace el ViewModel, y el nuevo valor vuelve a esta pantalla
  * a través del StateFlow, cerrando el flujo unidireccional de datos.
+ *
+ * Tarea 8: incluye un contador en estado temporal (remember) para contrastarlo con las
+ * preferencias persistentes: el contador se pierde al cerrar la app, las preferencias no.
  */
 @Composable
 fun PreferencesScreen(
@@ -67,6 +75,9 @@ fun PreferencesScreen(
     onReset: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // Tarea 8: estado TEMPORAL. Vive solo en memoria mientras el Composable exista.
+    var contadorTemporal by remember { mutableIntStateOf(0) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -126,6 +137,29 @@ fun PreferencesScreen(
             ApuntesView(
                 apuntes = APUNTES.filter { it.facultad == preferences.selectedFaculty },
                 enCuadricula = preferences.gridView
+            )
+        }
+
+        // ---------------- Tarea 8: temporal vs persistente ----------------
+        SeccionCard(titulo = "Estado temporal vs dato persistente") {
+            Text(
+                text = "Contador temporal (remember): $contadorTemporal",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.testTag("texto_contador")
+            )
+            Button(
+                onClick = { contadorTemporal++ },
+                modifier = Modifier.testTag("boton_contador")
+            ) {
+                Text("Sumar 1 (no se guarda)")
+            }
+            Text(
+                text = "Al cerrar y reabrir la app el contador vuelve a 0, " +
+                    "mientras que el tema, la vista y la facultad se leen de DataStore " +
+                    "y se conservan.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
